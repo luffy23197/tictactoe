@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .ban{display:grid;grid-template-columns:repeat(3,80px);gap:6px;margin:10px 0}
+        .o{width:80px;height:80px;font-size:34px;cursor:pointer}
+    </style>
+<body>
+<h3>Cờ Caro</h3>
+<div id="luot">Lượt: X</div>
+<div id="ban" class="ban"></div>
+<button id="reset">Chơi lại</button>
+<p id="tb"></p>
+<script>
+    let banCo = [["","",""],["","",""],["","",""]];
+    let nguoi = "X", ketThuc = false;
+    function ve() {
+        let b = document.getElementById("ban"); b.innerHTML = "";
+        for (let i=0;i<3;i++) for (let j=0;j<3;j++){
+            let btn = document.createElement("button");
+            btn.className="o"; btn.textContent = banCo[i][j] || ".";
+            btn.disabled = ketThuc || banCo[i][j]!=="";
+            btn.onclick = ()=>danh(i,j);
+            b.appendChild(btn);
+        }
+        document.getElementById("luot").textContent = "Lượt: "+nguoi;
+    }
+    function danh(i,j){
+        if (banCo[i][j] || ketThuc) return;
+        banCo[i][j] = nguoi;
+        if (thang()) { ketThuc = true; document.getElementById("tb").textContent = "🏆 "+nguoi+" thắng!"; }
+        else if (hoa()) { ketThuc = true; document.getElementById("tb").textContent = "Hòa!"; }
+        else nguoi = (nguoi==="X"?"O":"X");
+        ve();
+    }
+    function hoa(){
+        for (let i=0;i<3;i++) for (let j=0;j<3;j++) if (!banCo[i][j]) return false;
+        return true;
+    }
+    function thang(){
+        for (let i=0;i<3;i++){
+            if (banCo[i][0] && banCo[i][0]===banCo[i][1] && banCo[i][1]===banCo[i][2]) return true;
+            if (banCo[0][i] && banCo[0][i]===banCo[1][i] && banCo[1][i]===banCo[2][i]) return true;
+        }
+        if (banCo[0][0] && banCo[0][0]===banCo[1][1] && banCo[1][1]===banCo[2][2]) return true;
+        if (banCo[0][2] && banCo[0][2]===banCo[1][1] && banCo[1][1]===banCo[2][0]) return true;
+        return false;
+    }
+    document.getElementById("reset").onclick = ()=>{
+        banCo = [["","",""],["","",""],["","",""]]; nguoi="X"; ketThuc=false;
+        document.getElementById("tb").textContent=""; ve();
+    };
+    ve();
+</script>
+</body>
+</html>
